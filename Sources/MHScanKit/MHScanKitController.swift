@@ -10,7 +10,7 @@ import Vision
 import AVFoundation
 
 public protocol MHScanKitDelegate: AnyObject {
-    func scanReturnedPayload(payloadString: String?, fromSession: AVCaptureSession)
+    func scanReturnedPayload(payloadString: String?, from session: AVCaptureSession)
 }
 
 /**
@@ -31,6 +31,18 @@ public class MHScanKitController: UIViewController, AVCaptureVideoDataOutputSamp
         
         self.processClassification(request)
     }
+    
+    lazy var flashlightButton: MHSKCustomButton = {
+        let flashlightButton = MHSKCustomButton(frame: .zero)
+        let config = UIImage.SymbolConfiguration(pointSize: 24)
+        flashlightButton.translatesAutoresizingMaskIntoConstraints = false
+        flashlightButton.setImage(UIImage(systemName: "bolt", withConfiguration: config), for: .normal)
+        flashlightButton.setImage(UIImage(systemName: "bolt.fill", withConfiguration: config), for: .selected)
+        flashlightButton.backgroundColor = .secondarySystemBackground
+        flashlightButton.layer.cornerRadius = 25.0
+        flashlightButton.addTarget(self, action: #selector(lightButton), for: .touchUpInside)
+        return flashlightButton
+    }()
     
     var captureSession = AVCaptureSession()
     var cameraPreviewLayer: AVCaptureVideoPreviewLayer
@@ -134,6 +146,7 @@ public class MHScanKitController: UIViewController, AVCaptureVideoDataOutputSamp
                     self.present(alertController, animated: true)
                     #endif
                     self.scanReturnedProcessor(payload: potentialQRCode.payloadStringValue)
+                    self.flashlightButton.isSelected = false
                 }
             }
         }
@@ -180,20 +193,11 @@ public class MHScanKitController: UIViewController, AVCaptureVideoDataOutputSamp
     }
     
     func scanReturnedProcessor(payload: String?) {
-        delegate?.scanReturnedPayload(payloadString: payload, fromSession: self.captureSession)
+        delegate?.scanReturnedPayload(payloadString: payload, from: self.captureSession)
     }
     
     // MARK: - Button Actions
     private func addButtonsToView() {
-        let flashlightButton = MHSKCustomButton(frame: .zero)
-        let config = UIImage.SymbolConfiguration(pointSize: 24)
-        flashlightButton.translatesAutoresizingMaskIntoConstraints = false
-        flashlightButton.setImage(UIImage(systemName: "bolt", withConfiguration: config), for: .normal)
-        flashlightButton.setImage(UIImage(systemName: "bolt.fill", withConfiguration: config), for: .selected)
-        flashlightButton.backgroundColor = .secondarySystemBackground
-        flashlightButton.layer.cornerRadius = 25.0
-        flashlightButton.addTarget(self, action: #selector(lightButton), for: .touchUpInside)
-        
         /* Future implementation of a new featured button.
         let scanListButton = MHSKCustomButton(frame: .zero)
         scanListButton.translatesAutoresizingMaskIntoConstraints = false
