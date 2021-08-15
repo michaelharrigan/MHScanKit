@@ -10,7 +10,7 @@ import Vision
 import AVFoundation
 
 public protocol MHScanKitDelegate: AnyObject {
-    func scanReturnedPayload(payloadString: String?)
+    func scanReturnedPayload(payloadString: String?, fromSession: AVCaptureSession)
 }
 
 /**
@@ -134,10 +134,6 @@ public class MHScanKitController: UIViewController, AVCaptureVideoDataOutputSamp
                     self.present(alertController, animated: true)
                     #endif
                     self.scanReturnedProcessor(payload: potentialQRCode.payloadStringValue)
-                    MKScanKitDeviceHelper.toggleTorch(on: false)
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.20, execute: {
-                        self.captureSession.startRunning()
-                    })
                 }
             }
         }
@@ -184,7 +180,7 @@ public class MHScanKitController: UIViewController, AVCaptureVideoDataOutputSamp
     }
     
     func scanReturnedProcessor(payload: String?) {
-        delegate?.scanReturnedPayload(payloadString: payload)
+        delegate?.scanReturnedPayload(payloadString: payload, fromSession: self.captureSession)
     }
     
     // MARK: - Button Actions
@@ -198,25 +194,29 @@ public class MHScanKitController: UIViewController, AVCaptureVideoDataOutputSamp
         flashlightButton.layer.cornerRadius = 25.0
         flashlightButton.addTarget(self, action: #selector(lightButton), for: .touchUpInside)
         
+        /* Future implementation of a new featured button.
         let scanListButton = MHSKCustomButton(frame: .zero)
         scanListButton.translatesAutoresizingMaskIntoConstraints = false
         scanListButton.setImage(UIImage(systemName: "list.bullet", withConfiguration: config), for: .normal)
         scanListButton.backgroundColor = .secondarySystemBackground
         scanListButton.layer.cornerRadius = 25.0
         scanListButton.addTarget(self, action: #selector(scanListButtonAction), for: .touchUpInside)
+        */
         
         self.view.addSubview(flashlightButton)
-        self.view.addSubview(scanListButton)
+        // self.view.addSubview(scanListButton)
         NSLayoutConstraint.activate([
             flashlightButton.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 24.0),
             flashlightButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -24.0),
             flashlightButton.heightAnchor.constraint(equalToConstant: 52.0),
             flashlightButton.widthAnchor.constraint(equalToConstant: 52.0),
             
+            /*
             scanListButton.topAnchor.constraint(equalTo: flashlightButton.topAnchor),
             scanListButton.trailingAnchor.constraint(equalTo: flashlightButton.leadingAnchor, constant: -16.0),
             scanListButton.heightAnchor.constraint(equalToConstant: 52.0),
             scanListButton.widthAnchor.constraint(equalToConstant: 52.0),
+            */
         ])
     }
     
@@ -228,7 +228,7 @@ public class MHScanKitController: UIViewController, AVCaptureVideoDataOutputSamp
     
     @objc
     func scanListButtonAction(sender : MHSKCustomButton) {
-        sender.isSelected.toggle()
+        // sender.isSelected.toggle()
     }
     
     // MARK: - Alerts
