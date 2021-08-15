@@ -9,7 +9,7 @@ import UIKit
 import Vision
 import AVFoundation
 
-protocol MHScanKitDelegate: AnyObject {
+public protocol MHScanKitDelegate: AnyObject {
     func scanReturnedPayload(payloadString: String?)
 }
 
@@ -35,7 +35,7 @@ public class MHScanKitController: UIViewController, AVCaptureVideoDataOutputSamp
     var captureSession = AVCaptureSession()
     var cameraPreviewLayer: AVCaptureVideoPreviewLayer
     var maskLayer = CAShapeLayer()
-    weak var delegate: MHScanKitDelegate?
+    public weak var delegate: MHScanKitDelegate?
     
     // MARK: - Life Cycle
     public init() {
