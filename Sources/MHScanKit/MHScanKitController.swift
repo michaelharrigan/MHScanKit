@@ -38,7 +38,7 @@ public class MHScanKitController: UIViewController, AVCaptureVideoDataOutputSamp
     weak var delegate: MHScanKitDelegate?
     
     // MARK: - Life Cycle
-    init() {
+    public init() {
         self.cameraPreviewLayer = AVCaptureVideoPreviewLayer(session: self.captureSession)
         super.init(nibName: nil, bundle: nil)
         self.addButtonsToView()
