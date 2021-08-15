@@ -38,7 +38,7 @@ public class MHScanKitController: UIViewController, AVCaptureVideoDataOutputSamp
     weak var delegate: MHScanKitDelegate?
     
     // MARK: - Life Cycle
-    public init(viewController: UIViewController) {
+    init() {
         self.cameraPreviewLayer = AVCaptureVideoPreviewLayer(session: self.captureSession)
         super.init(nibName: nil, bundle: nil)
         self.addButtonsToView()
@@ -80,9 +80,10 @@ public class MHScanKitController: UIViewController, AVCaptureVideoDataOutputSamp
         guard let device = videoDevice,
               let videoDeviceInput = try? AVCaptureDeviceInput(device: device),
               self.captureSession.canAddInput(videoDeviceInput) else {
-            self.showAlert(
-                withTitle: NSLocalizedString("Cannot Find Camera", comment: "Cannot Find Camera"),
-                message: NSLocalizedString("There seems to be a problem with the camera on your device.", comment: "There seems to be a problem with the camera on your device."))
+            let alertController = UIAlertController(title:  NSLocalizedString("Cannot Find Camera", comment: "Cannot Find Camera"), message: NSLocalizedString("There seems to be a problem with the camera on your device.", comment: "There seems to be a problem with the camera on your device."), preferredStyle: .alert)
+            let action = UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: .default, handler: nil)
+            alertController.addAction(action)
+            self.present(alertController, animated: true, completion: nil)
             return
         }
         
@@ -124,11 +125,14 @@ public class MHScanKitController: UIViewController, AVCaptureVideoDataOutputSamp
                     guard let firstBox = barcode as? VNRectangleObservation else { return }
                     self.drawBoundingBox(rect: firstBox)
                     self.captureSession.stopRunning()
-                    self.showAlert(
-                        withTitle: potentialQRCode.symbology.rawValue,
-                        message: String(potentialQRCode.confidence) + " " + (potentialQRCode.payloadStringValue ?? "" ))
-                    self.scanReturnedProcessor(payload: potentialQRCode.payloadStringValue)
-                    return
+                    let alertTitle = NSLocalizedString("Success!", comment: "Success!")
+                    let alertBody = String.localizedStringWithFormat(NSLocalizedString("Accuracy: %.2f\n%@\n Barcode Type: %@", comment: "Accuracy: <% of accuarcy> <new-line> <barcode> <new-line> <type of carcode>"), potentialQRCode.confidence, potentialQRCode.payloadStringValue ?? "", potentialQRCode.symbology.rawValue)
+                    let alertController = UIAlertController(title: alertTitle, message: alertBody, preferredStyle: .alert)
+                    let alertAction = UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: .default, handler: nil)
+                    alertController.addAction(alertAction)
+                    self.present(alertController, animated: true) {
+                        self.scanReturnedProcessor(payload: potentialQRCode.payloadStringValue)
+                    }
                 }
             }
         }
@@ -180,7 +184,7 @@ public class MHScanKitController: UIViewController, AVCaptureVideoDataOutputSamp
     
     // MARK: - Button Actions
     private func addButtonsToView() {
-        let flashlightButton = SamplerButton(frame: .zero)
+        let flashlightButton = MHSKCustomButton(frame: .zero)
         let config = UIImage.SymbolConfiguration(pointSize: 24)
         flashlightButton.translatesAutoresizingMaskIntoConstraints = false
         flashlightButton.setImage(UIImage(systemName: "bolt", withConfiguration: config), for: .normal)
@@ -189,7 +193,7 @@ public class MHScanKitController: UIViewController, AVCaptureVideoDataOutputSamp
         flashlightButton.layer.cornerRadius = 25.0
         flashlightButton.addTarget(self, action: #selector(lightButton), for: .touchUpInside)
         
-        let scanListButton = SamplerButton(frame: .zero)
+        let scanListButton = MHSKCustomButton(frame: .zero)
         scanListButton.translatesAutoresizingMaskIntoConstraints = false
         scanListButton.setImage(UIImage(systemName: "list.bullet", withConfiguration: config), for: .normal)
         scanListButton.backgroundColor = .secondarySystemBackground
@@ -212,46 +216,26 @@ public class MHScanKitController: UIViewController, AVCaptureVideoDataOutputSamp
     }
     
     @objc
-    func lightButton(sender : SamplerButton) {
+    func lightButton(sender : MHSKCustomButton) {
         sender.isSelected.toggle()
         MKScanKitDeviceHelper.toggleTorch(on: sender.isSelected)
     }
     
     @objc
-    func scanListButtonAction(sender : SamplerButton) {
+    func scanListButtonAction(sender : MHSKCustomButton) {
         sender.isSelected.toggle()
- 
     }
     
-    // MARK: - Alert Location
-    private func showAlert(withTitle title: String, message: String) {
-        DispatchQueue.main.async {
-            let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-            alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: .default, handler: { _ in
-                self.captureSession.startRunning()
-            }))
-            self.present(alertController, animated: true)
-        }
-    }
-    
+    // MARK: - Alerts
     private func showPermissionsAlert() {
-        self.showAlert(
-            withTitle: NSLocalizedString("Camera Permissions", comment: "Camera Permissions"),
-            message: NSLocalizedString("Please open Settings and grant permission for this app to use your camera.", comment: "Please open Settings and grant permission for this app to use your camera."))
-    }
-}
-
-// MARK: - Custom Button
-class SamplerButton: UIButton {
-    override var isSelected: Bool {
-        willSet {
-            print("changing from \(isSelected) to \(newValue)")
-        }
-        
-        didSet {
-            print("changed from \(oldValue) to \(isSelected)")
-            let generator = UISelectionFeedbackGenerator()
-            generator.selectionChanged()
+        DispatchQueue.main.async {
+            let alertController = UIAlertController(title: NSLocalizedString("Camera Permissions", comment: "Camera Permissions"), message: NSLocalizedString("Please open Settings and grant permission for this app to use your camera.", comment: "Please open Settings and grant permission for this app to use your camera."), preferredStyle: .alert)
+            let action = UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: .default, handler: { _ in
+                guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else { return }
+                UIApplication.shared.open(settingsUrl)
+            })
+            alertController.addAction(action)
+            self.present(alertController, animated: true)
         }
     }
 }

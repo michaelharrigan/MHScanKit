@@ -8,7 +8,7 @@
 import UIKit
 import AVFoundation
 
-class MKScanKitDeviceHelper {
+internal class MKScanKitDeviceHelper {
     
     static func toggleTorch(on: Bool) {
         
