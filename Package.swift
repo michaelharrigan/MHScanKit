@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "MHScanKit",
-    platforms: [.iOS(.v14)],
+    platforms: [.iOS(.v13)],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
@@ -22,8 +22,10 @@ let package = Package(
         .target(
             name: "MHScanKit",
             dependencies: []),
+        /*
         .testTarget(
             name: "MHScanKitTests",
             dependencies: ["MHScanKit"]),
+         */
     ]
 )
