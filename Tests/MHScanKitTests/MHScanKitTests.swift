@@ -1,10 +1,15 @@
-    import XCTest
-    @testable import MHScanKit
+import XCTest
+@testable import MHScanKit
 
-    final class MHScanKitTests: XCTestCase {
-        func testExample() {
-            // This is an example of a functional test case.
-            // Use XCTAssert and related functions to verify your tests produce the correct
-            // results.
-        }
+final class MHScanKitTests: XCTestCase {
+    func testSimpleErrorCases() {
+        
+        // Test 1
+        let errorCode = MHSKError.unexpected(code: 123)
+        XCTAssertTrue(errorCode.description == "Error 123")
+        
+        // Test 2
+        let errorCodeTwo = MHSKError.genericError(message: "Testing the error out!")
+        XCTAssertTrue(errorCodeTwo.description == "Testing the error out!")
     }
+}
