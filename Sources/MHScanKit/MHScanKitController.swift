@@ -125,14 +125,15 @@ public class MHScanKitController: UIViewController, AVCaptureVideoDataOutputSamp
                     guard let firstBox = barcode as? VNRectangleObservation else { return }
                     self.drawBoundingBox(rect: firstBox)
                     self.captureSession.stopRunning()
+                    #if DEBUG
                     let alertTitle = NSLocalizedString("Success!", comment: "Success!")
                     let alertBody = String.localizedStringWithFormat(NSLocalizedString("Accuracy: %.2f\n%@\n Barcode Type: %@", comment: "Accuracy: <% of accuarcy> <new-line> <barcode> <new-line> <type of carcode>"), potentialQRCode.confidence, potentialQRCode.payloadStringValue ?? "", potentialQRCode.symbology.rawValue)
                     let alertController = UIAlertController(title: alertTitle, message: alertBody, preferredStyle: .alert)
                     let alertAction = UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: .default, handler: nil)
                     alertController.addAction(alertAction)
-                    self.present(alertController, animated: true) {
-                        self.scanReturnedProcessor(payload: potentialQRCode.payloadStringValue)
-                    }
+                    self.present(alertController, animated: true)
+                    #endif
+                    self.scanReturnedProcessor(payload: potentialQRCode.payloadStringValue)
                 }
             }
         }
