@@ -4,11 +4,11 @@
 //
 //  Created by Michael Harrigan on 8/8/21.
 //
-
+#if !os(macOS)
 import UIKit
 import AVFoundation
 
-class MKScanKitDeviceHelper {
+internal class MKScanKitDeviceHelper {
     
     static func toggleTorch(on: Bool) {
         
@@ -30,3 +30,4 @@ class MKScanKitDeviceHelper {
         }
     }
 }
+#endif
