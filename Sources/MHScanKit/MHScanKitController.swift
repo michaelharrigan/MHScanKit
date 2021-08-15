@@ -134,6 +134,10 @@ public class MHScanKitController: UIViewController, AVCaptureVideoDataOutputSamp
                     self.present(alertController, animated: true)
                     #endif
                     self.scanReturnedProcessor(payload: potentialQRCode.payloadStringValue)
+                    MKScanKitDeviceHelper.toggleTorch(on: false)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.20, execute: {
+                        self.captureSession.startRunning()
+                    })
                 }
             }
         }
