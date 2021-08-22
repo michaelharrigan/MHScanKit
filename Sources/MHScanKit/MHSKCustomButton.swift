@@ -5,8 +5,9 @@
 //  Created by Michael Harrigan on 8/14/21.
 //
 
+#if canImport(UIKit)
 import UIKit
-
+#endif
 
 class MHSKCustomButton: UIButton {
     override var isSelected: Bool {
