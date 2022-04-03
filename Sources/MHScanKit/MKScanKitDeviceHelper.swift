@@ -4,7 +4,7 @@
 //
 //  Created by Michael Harrigan on 8/8/21.
 //
-
+#if !os(macOS)
 import UIKit
 import AVFoundation
 
@@ -30,3 +30,4 @@ internal class MKScanKitDeviceHelper {
         }
     }
 }
+#endif

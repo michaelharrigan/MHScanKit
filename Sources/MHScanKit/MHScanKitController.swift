@@ -4,7 +4,7 @@
 //
 //  Created by Michael Harrigan on 8/7/21.
 //
-
+#if !os(macOS)
 import UIKit
 import Vision
 import AVFoundation
@@ -248,3 +248,4 @@ public class MHScanKitController: UIViewController, AVCaptureVideoDataOutputSamp
         }
     }
 }
+#endif

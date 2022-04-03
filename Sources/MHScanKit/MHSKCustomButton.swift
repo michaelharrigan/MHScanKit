@@ -4,9 +4,8 @@
 //
 //  Created by Michael Harrigan on 8/14/21.
 //
-
+#if !os(macOS)
 import UIKit
-
 
 class MHSKCustomButton: UIButton {
     override var isSelected: Bool {
@@ -21,3 +20,4 @@ class MHSKCustomButton: UIButton {
         }
     }
 }
+#endif
