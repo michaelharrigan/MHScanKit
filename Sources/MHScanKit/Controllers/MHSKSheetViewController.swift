@@ -7,56 +7,64 @@
 import AVFoundation
 import UIKit
 
-public class MHSKSheetViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
+public class MHSKSheetViewController: UIViewController {
   
-  let captureSession = AVCaptureSession()
+  private let captureSession = AVCaptureSession()
+  private lazy var codeHighlightView: UIView = {
+    let view = UIView()
+    view.layer.borderColor = UIColor.green.cgColor
+    view.layer.borderWidth = 2.0
+    view.isHidden = true
+    view.translatesAutoresizingMaskIntoConstraints = false
+    return view
+  }()
+  
+  private var previewLayer: AVCaptureVideoPreviewLayer?
+  
+  private let supportedBarcodeTypes: [AVMetadataObject.ObjectType] = [.ean8, .ean13, .pdf417, .code128]
+  
+  // Constants for better code readability
+  private let animationDuration: TimeInterval = 0.2
+  private let feedbackGenerator = UINotificationFeedbackGenerator()
   
   public override func viewDidLoad() {
     super.viewDidLoad()
-    self.createCaptureSession()
-    self.createCapture()
-    
-    let previewLayer = AVCaptureVideoPreviewLayer(session: self.captureSession)
-    previewLayer.frame = view.layer.bounds
-    self.view.layer.addSublayer(previewLayer)
+    setupCaptureSession()
+    setupUI()
+    createCapture()
   }
-
-  func createCaptureSession() {
-    guard let captureDevice = AVCaptureDevice.default(for: .video) else { return }
+  
+  private func setupCaptureSession() {
+    guard let captureDevice = AVCaptureDevice.default(for: .video) else {
+      showError(message: "No camera available.")
+      return
+    }
     
     do {
       let input = try AVCaptureDeviceInput(device: captureDevice)
-      self.captureSession.addInput(input)
+      captureSession.addInput(input)
+      
+      let metadataOutput = AVCaptureMetadataOutput()
+      captureSession.addOutput(metadataOutput)
+      metadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
+      metadataOutput.metadataObjectTypes = supportedBarcodeTypes
     } catch {
-      let generator = UINotificationFeedbackGenerator()
-      generator.notificationOccurred(.error)
-      return
+      showError(message: "Failed to set up the camera.")
     }
-
-    let metadataOutput = AVCaptureMetadataOutput()
-    self.captureSession.addOutput(metadataOutput)
-    metadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
-    metadataOutput.metadataObjectTypes = [.ean8, .ean13, .pdf417, .code128]
   }
   
-  public func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
-    if let firstObject = metadataObjects.first,
-       let barcodeData = (firstObject as? AVMetadataMachineReadableCodeObject)?.stringValue {
-      let generator = UINotificationFeedbackGenerator()
-      generator.notificationOccurred(.success)
-      self.captureSession.stopRunning()
-      let alert = UIAlertController(title: barcodeData, message: "Copy barcode", preferredStyle: .alert)
-      let copyAction = UIAlertAction(title: "Copy", style: .default) { _ in
-        UIPasteboard.general.string = barcodeData
-        self.createCapture()
-      }
-      let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
-        self.createCapture()
-      }
-      alert.addAction(copyAction)
-      alert.addAction(cancelAction)
-      self.present(alert, animated: true)
+  private func setupUI() {
+    previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+    previewLayer?.frame = view.layer.bounds
+    if let previewLayer = previewLayer {
+      view.layer.addSublayer(previewLayer)
     }
+    view.addSubview(codeHighlightView)
+  }
+  
+  private func showError(message: String) {
+    feedbackGenerator.notificationOccurred(.error)
+    print(message) // You can handle the error more gracefully, e.g., by displaying an alert to the user.
   }
   
   private func createCapture() {
@@ -64,6 +72,43 @@ public class MHSKSheetViewController: UIViewController, AVCaptureMetadataOutputO
       self.captureSession.startRunning()
     }
   }
-
 }
 
+extension MHSKSheetViewController: AVCaptureMetadataOutputObjectsDelegate {
+  public func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
+    if let firstObject = metadataObjects.first,
+       let barcodeData = (firstObject as? AVMetadataMachineReadableCodeObject)?.stringValue {
+      
+      if let transformedObject = previewLayer?.transformedMetadataObject(for: firstObject) as? AVMetadataMachineReadableCodeObject {
+        let codeFrame = transformedObject.bounds
+        DispatchQueue.main.async {
+          self.updateCodeHighlightView(frame: codeFrame)
+        }
+      }
+      
+      feedbackGenerator.notificationOccurred(.success)
+      captureSession.stopRunning()
+      
+      DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+        let alert = UIAlertController(title: barcodeData, message: "Copy barcode", preferredStyle: .alert)
+        let copyAction = UIAlertAction(title: "Copy", style: .default) { _ in
+          UIPasteboard.general.string = barcodeData
+          self.createCapture()
+        }
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
+          self.createCapture()
+        }
+        alert.addAction(copyAction)
+        alert.addAction(cancelAction)
+        self.present(alert, animated: true)
+      }
+    }
+  }
+  
+  private func updateCodeHighlightView(frame: CGRect) {
+    UIView.animate(withDuration: animationDuration) {
+      self.codeHighlightView.frame = frame
+      self.codeHighlightView.isHidden = false
+    }
+  }
+}
