@@ -1,107 +1,69 @@
 //
 //  MHSKSheetViewController.swift
-//  
+//
 //
 //  Created by Michael Harrigan on 10/28/22.
 //
-
+import AVFoundation
 import UIKit
 
-protocol MHSKSheetViewControllerDelegate: AnyObject {
-    func sheetControllerActionOccured(buttonType: MHSKSheetViewController.ButtonType)
-}
-
-class MHSKSheetViewController: UIViewController {
-
-    enum ButtonType {
-        case scan, dismiss, help
-    }
+public class MHSKSheetViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
+  
+  let captureSession = AVCaptureSession()
+  
+  public override func viewDidLoad() {
+    super.viewDidLoad()
+    self.createCaptureSession()
+    self.createCapture()
     
-    private lazy var sendButton: UIButton = {
-        let button = UIButton(configuration: .filled())
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Securely Scan", for: .normal)
-        button.titleLabel?.adjustsFontForContentSizeCategory = true
-        button.addTarget(self, action: #selector(sendAction), for: .touchUpInside)
-        button.configuration?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-        var outgoing = incoming
-            outgoing.font = .systemFont(ofSize: 24.0, weight: .semibold)
-        return outgoing
-     }
-        return button
-    }()
+    let previewLayer = AVCaptureVideoPreviewLayer(session: self.captureSession)
+    previewLayer.frame = view.layer.bounds
+    self.view.layer.addSublayer(previewLayer)
+  }
 
-    private lazy var recieveButton: UIButton = {
-        let button = UIButton(configuration: .filled())
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Help", for: .normal)
-        button.titleLabel?.adjustsFontForContentSizeCategory = true
-
-        button.configuration?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-        var outgoing = incoming
-            outgoing.font = .systemFont(ofSize: 24.0, weight: .semibold)
-        return outgoing
-     }
-        return button
-    }()
-
-    private lazy var helpButton: UIButton = {
-        let button = UIButton(configuration: .filled())
-        button.tintColor = .systemRed
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Dismiss", for: .normal)
-        button.titleLabel?.adjustsFontForContentSizeCategory = true
-
-        button.configuration?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-        var outgoing = incoming
-            outgoing.font = .systemFont(ofSize: 24.0, weight: .semibold)
-        return outgoing
-     }
-        return button
-    }()
-
-    private lazy var stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.axis = .vertical
-        stackView.spacing = 16.0
-        return stackView
-    }()
-
-    private lazy var mainLabel: UILabel = {
-        let label = UILabel()
-        label.numberOfLines = 0
-        label.lineBreakMode = .byWordWrapping
-        let fontMetrics = UIFontMetrics(forTextStyle: .title1)
-        label.font = fontMetrics.scaledFont(for: .systemFont(ofSize: 32.0, weight: .bold))
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.adjustsFontSizeToFitWidth = true
-        label.adjustsFontForContentSizeCategory = true
-        label.text = NSLocalizedString("Scanning?", comment: "Scanning?")
-        return label
-    }()
-
-    weak var delegate: MHSKSheetViewControllerDelegate?
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        self.view.backgroundColor = .systemBackground
-
-        self.view.addSubview(stackView)
-        self.stackView.addArrangedSubview(mainLabel)
-        self.stackView.addArrangedSubview(sendButton)
-        self.stackView.addArrangedSubview(recieveButton)
-        self.stackView.addArrangedSubview(helpButton)
-        NSLayoutConstraint.activate([
-            self.stackView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 16.0),
-            self.stackView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -16.0),
-            self.stackView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 16.0),
-            self.stackView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -16.0)
-        ])
+  func createCaptureSession() {
+    guard let captureDevice = AVCaptureDevice.default(for: .video) else { return }
+    
+    do {
+      let input = try AVCaptureDeviceInput(device: captureDevice)
+      self.captureSession.addInput(input)
+    } catch {
+      let generator = UINotificationFeedbackGenerator()
+      generator.notificationOccurred(.error)
+      return
     }
 
-    @objc func sendAction() {
-        self.delegate?.sheetControllerActionOccured(buttonType: .scan)
+    let metadataOutput = AVCaptureMetadataOutput()
+    self.captureSession.addOutput(metadataOutput)
+    metadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
+    metadataOutput.metadataObjectTypes = [.ean8, .ean13, .pdf417, .code128]
+  }
+  
+  public func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
+    if let firstObject = metadataObjects.first,
+       let barcodeData = (firstObject as? AVMetadataMachineReadableCodeObject)?.stringValue {
+      let generator = UINotificationFeedbackGenerator()
+      generator.notificationOccurred(.success)
+      self.captureSession.stopRunning()
+      let alert = UIAlertController(title: barcodeData, message: "Copy barcode", preferredStyle: .alert)
+      let copyAction = UIAlertAction(title: "Copy", style: .default) { _ in
+        UIPasteboard.general.string = barcodeData
+        self.createCapture()
+      }
+      let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
+        self.createCapture()
+      }
+      alert.addAction(copyAction)
+      alert.addAction(cancelAction)
+      self.present(alert, animated: true)
     }
+  }
+  
+  private func createCapture() {
+    DispatchQueue.global(qos: .background).async {
+      self.captureSession.startRunning()
+    }
+  }
+
 }
 

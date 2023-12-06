@@ -22,8 +22,10 @@ let package = Package(
         .target(
             name: "MHScanKit",
             dependencies: []),
+        /*
         .testTarget(
             name: "MHScanKitTests",
             dependencies: ["MHScanKit"]),
+         */
     ]
 )

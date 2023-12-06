@@ -8,9 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		354F8FEB290C507A001F57F5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354F8FEA290C507A001F57F5 /* AppDelegate.swift */; };
-		354F8FED290C507A001F57F5 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354F8FEC290C507A001F57F5 /* SceneDelegate.swift */; };
-		354F8FEF290C507A001F57F5 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354F8FEE290C507A001F57F5 /* HomeViewController.swift */; };
-		354F8FF2290C507A001F57F5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 354F8FF0290C507A001F57F5 /* Main.storyboard */; };
 		354F8FF4290C507B001F57F5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 354F8FF3290C507B001F57F5 /* Assets.xcassets */; };
 		354F8FF7290C507B001F57F5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 354F8FF5290C507B001F57F5 /* LaunchScreen.storyboard */; };
 		354F901E290C50AD001F57F5 /* MHScanKit in Frameworks */ = {isa = PBXBuildFile; productRef = 354F901D290C50AD001F57F5 /* MHScanKit */; };
@@ -19,9 +16,6 @@
 /* Begin PBXFileReference section */
 		354F8FE7290C507A001F57F5 /* MHScanKitDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MHScanKitDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		354F8FEA290C507A001F57F5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		354F8FEC290C507A001F57F5 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		354F8FEE290C507A001F57F5 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
-		354F8FF1290C507A001F57F5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		354F8FF3290C507B001F57F5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		354F8FF6290C507B001F57F5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		354F8FF8290C507B001F57F5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -62,7 +56,6 @@
 			isa = PBXGroup;
 			children = (
 				35C14473290C65A100149A65 /* LifeCycle */,
-				35C14472290C659A00149A65 /* Controllers */,
 				354F8FF8290C507B001F57F5 /* Info.plist */,
 			);
 			path = MHScanKitDemo;
@@ -83,22 +76,12 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		35C14472290C659A00149A65 /* Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				354F8FEE290C507A001F57F5 /* HomeViewController.swift */,
-			);
-			path = Controllers;
-			sourceTree = "<group>";
-		};
 		35C14473290C65A100149A65 /* LifeCycle */ = {
 			isa = PBXGroup;
 			children = (
-				354F8FF0290C507A001F57F5 /* Main.storyboard */,
 				354F8FF3290C507B001F57F5 /* Assets.xcassets */,
 				354F8FF5290C507B001F57F5 /* LaunchScreen.storyboard */,
 				354F8FEA290C507A001F57F5 /* AppDelegate.swift */,
-				354F8FEC290C507A001F57F5 /* SceneDelegate.swift */,
 			);
 			path = LifeCycle;
 			sourceTree = "<group>";
@@ -166,7 +149,6 @@
 			files = (
 				354F8FF7290C507B001F57F5 /* LaunchScreen.storyboard in Resources */,
 				354F8FF4290C507B001F57F5 /* Assets.xcassets in Resources */,
-				354F8FF2290C507A001F57F5 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -177,23 +159,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				354F8FEF290C507A001F57F5 /* HomeViewController.swift in Sources */,
 				354F8FEB290C507A001F57F5 /* AppDelegate.swift in Sources */,
-				354F8FED290C507A001F57F5 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		354F8FF0290C507A001F57F5 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				354F8FF1290C507A001F57F5 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		354F8FF5290C507B001F57F5 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -329,11 +301,13 @@
 				DEVELOPMENT_TEAM = 8QXPTD6XQ6;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MHScanKitDemo/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MHScanKit;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Using the camera to scan barcodes and other data.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -342,9 +316,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = different.productions.MHScanKitDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -358,11 +335,13 @@
 				DEVELOPMENT_TEAM = 8QXPTD6XQ6;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MHScanKitDemo/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MHScanKit;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Using the camera to scan barcodes and other data.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -371,9 +350,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = different.productions.MHScanKitDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
