@@ -8,9 +8,7 @@
 import UIKit
 
 public class MHScanKitManager {
-  
   public static func startScanKit() -> MHSKSheetViewController {
-    let controllerToReturn = MHSKSheetViewController()
-    return controllerToReturn
+    return MHSKSheetViewController()
   }
 }
