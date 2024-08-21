@@ -28,7 +28,7 @@ You can install MHScanKit using Swift Package Manager. Add the following to your
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/yourusername/MHScanKit.git", from: "1.0.0")
+    .package(url: "https://github.com/michaelharrigan/MHScanKit", from: "1.0.0")
 ]
 ```
 
