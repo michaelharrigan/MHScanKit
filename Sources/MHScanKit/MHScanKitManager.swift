@@ -6,9 +6,11 @@
 //
 
 import UIKit
+import SwiftUI
 
+@available(iOS 14.0, *)
 public class MHScanKitManager {
-  public static func startScanKit() -> MHSKSheetViewController {
-    return MHSKSheetViewController()
+  public static func startScanKit() -> UIViewController {
+    return UIHostingController(rootView: MHSKSheetView())
   }
 }

@@ -6,6 +6,7 @@
 //
 import MHScanKit
 import UIKit
+import SwiftUI
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -14,7 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     self.window = UIWindow(frame: UIScreen.main.bounds)
-    let controller = MHSKSheetViewController()
+    let controller = UIHostingController(rootView: MHSKSheetView())
     self.window?.rootViewController = controller
     self.window?.makeKeyAndVisible()
     return true
