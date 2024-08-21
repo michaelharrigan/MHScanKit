@@ -153,8 +153,8 @@ extension MHSKSheetViewController: AVCaptureMetadataOutputObjectsDelegate {
       if let transformedObject = previewLayer?.transformedMetadataObject(for: metadataObject) as? AVMetadataMachineReadableCodeObject {
         updateCodeHighlightView(frame: transformedObject.bounds)
       }
-      
       onBarcodeScanned?(barcodeData)
+      self.stopCapture()
     } else {
       hideCodeHighlightView()
     }
