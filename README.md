@@ -4,10 +4,12 @@
 
 MHScanKit is a privacy-minded Swift package for scanning QR codes and barcodes in iOS applications. It provides a customizable, SwiftUI-based interface for barcode scanning with a focus on user privacy and ease of integration.
 
+![IMG_0044](https://github.com/user-attachments/assets/87995e7c-fdd6-470d-98bd-27a4df30e476)
+
+
 ## Features
 
 - Privacy-focused barcode and QR code scanning
-- SwiftUI interface with MVVM architecture
 - Support for multiple barcode types (EAN-8, EAN-13, PDF417, Code 128)
 - Customizable UI components
 - Torch (flashlight) control
